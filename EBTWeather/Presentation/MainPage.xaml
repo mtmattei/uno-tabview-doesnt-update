@@ -1,0 +1,195 @@
+﻿<Page x:Class="EBTWeather.Presentation.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      xmlns:ui="clr-namespace:Uno.Extensions.Reactive.UI;assembly=Uno.Extensions.Reactive.UI"
+      xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+      xmlns:local="using:EBTWeather.Presentation"
+      NavigationCacheMode="Required"
+      Background="{ThemeResource BackgroundBrush}">
+    <Grid utu:SafeArea.Insets="VisibleBounds">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <utu:NavigationBar Grid.Row="0" Content="{Binding Title}" />
+
+        <ScrollView Grid.Row="1">
+            <StackPanel Orientation="Vertical">
+                <TabView IsAddTabButtonVisible="False">
+                    <TabViewItem Header="Today" IsClosable="False">
+                        <ui:FeedView Source="{Binding CurrentAndFutureWeather}" Margin="10">
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock>
+                                        <Run Text="Temperature" />
+                                        <Run Text="{Binding Data.Temperature}"></Run>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Apparent Temperature" />
+                                        <Run Text="{Binding Data.ApparentTemperature}"></Run>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Forecast Temperature Min"/>
+                                        <Run Text="{Binding Data.TemperatureMin}"></Run>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Forecast Temperature Max"/>
+                                        <Run Text="{Binding Data.TemperatureMax}"></Run>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Forecast Precipitation Probability"/>
+                                        <Run Text="{Binding Data.PrecipitationProbability}"></Run><Run Text="%"/>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Forecast UV Index Max"/>
+                                        <Run Text="{Binding Data.UVIndexMax}"></Run>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Air Pressure:"></Run>
+                                        <Run Text="{Binding Data.AirPressure}"></Run>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Relative Humidity:"></Run>
+                                        <Run Text="{Binding Data.RelativeHumidity}"></Run><Run Text="%" />
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Wind Speed:"></Run>
+                                        <Run Text="{Binding Data.WindSpeed}"></Run>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Wind Direction:"></Run>
+                                        <Run Text="{Binding Data.WindDirection}"></Run>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Sunrise:"></Run>
+                                        <Run Text="{Binding Data.SunRise}"></Run>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Sunset:"></Run>
+                                        <Run Text="{Binding Data.SunSet}"></Run>
+                                    </TextBlock>
+                                    <TextBlock>
+                                        <Run Text="Weather Code:" />
+                                        <Run Text="{Binding Data.WeatherCode}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                            <ui:FeedView.ProgressTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="PROGRESS Retrieving weather info..."></TextBlock>
+                                </DataTemplate>
+                            </ui:FeedView.ProgressTemplate>
+                            <ui:FeedView.ErrorTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="Error"/>
+                                    <Button Content="Refresh" Command="{Binding Refresh}" />
+                                </DataTemplate>
+                            </ui:FeedView.ErrorTemplate>
+                            <ui:FeedView.NoneTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="NONE" />
+                                </DataTemplate>
+                            </ui:FeedView.NoneTemplate>
+                            <ui:FeedView.UndefinedTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="UNDEFINED" />
+                                </DataTemplate>
+                            </ui:FeedView.UndefinedTemplate>
+                        </ui:FeedView>
+                    </TabViewItem>
+                    <TabViewItem Header="10 day" IsClosable="False">
+                        <ui:FeedView Source="{Binding CurrentAndFutureWeather}" Margin="10">
+                            <DataTemplate>
+                                <ListView ItemsSource="{Binding Data.DailyWeatherInfo}">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Vertical">
+                                                <Expander Header="{Binding Date}">
+                                                    <StackPanel Orientation="Vertical">
+                                                        <ListView ItemsSource="{Binding HourlyWeatherInfo}">
+                                                            <ListView.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Margin="10, 0, 0, 0">
+                                                                        <TextBlock Text="{Binding DateTime}"/>
+                                                                        <TextBlock>
+                                                                            <Run Text="Temperature" />
+                                                                            <Run Text="{Binding Temperature}" />
+                                                                        </TextBlock>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </ListView.ItemTemplate>
+                                                        </ListView>
+                                                    </StackPanel>
+                                                </Expander>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </DataTemplate>
+                            <ui:FeedView.ProgressTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="Retrieving weather info..."></TextBlock>
+                                </DataTemplate>
+                            </ui:FeedView.ProgressTemplate>
+                            <ui:FeedView.ErrorTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="Error"/>
+                                    <Button Content="Refresh" Command="{Binding Refresh}" />
+                                </DataTemplate>
+                            </ui:FeedView.ErrorTemplate>
+                        </ui:FeedView>
+                    </TabViewItem>
+                    <TabViewItem Header="Historical" IsClosable="False">
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <DatePicker Header="Start" />
+                                <DatePicker Header="End" />
+                            </StackPanel>
+                            <ui:FeedView Source="{Binding HistoricalWeather}" Margin="10">
+                                <DataTemplate>
+                                    <ListView ItemsSource="{Binding Data.DailyWeatherInfo}">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Vertical">
+                                                    <Expander Header="{Binding Date}">
+                                                        <StackPanel Orientation="Vertical">
+                                                            <TextBlock>
+                                                                <Run Text="Temperature Min" />
+                                                                <Run Text="{Binding TemperatureMin}" />
+                                                            </TextBlock>
+                                                            <TextBlock>
+                                                                <Run Text="Temperature Max" />
+                                                                <Run Text="{Binding TemperatureMax}" />
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                    </Expander>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </DataTemplate>
+                                <ui:FeedView.ProgressTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="Retrieving weather info..."></TextBlock>
+                                    </DataTemplate>
+                                </ui:FeedView.ProgressTemplate>
+                                <ui:FeedView.ErrorTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="Error"/>
+                                        <Button Content="Refresh" Command="{Binding Refresh}" />
+                                    </DataTemplate>
+                                </ui:FeedView.ErrorTemplate>
+                            </ui:FeedView>
+                        </StackPanel>
+                    </TabViewItem>
+                </TabView>
+            </StackPanel>
+        </ScrollView>
+
+        <StackPanel Grid.Row="2" Orientation="Vertical" VerticalAlignment="Bottom" Background="DarkSlateGray">
+            <TextBlock Name="Status" FontFamily="Lucida Console" Margin="4, 4, 4, 4" Foreground="White" />
+        </StackPanel>
+    </Grid>
+</Page>

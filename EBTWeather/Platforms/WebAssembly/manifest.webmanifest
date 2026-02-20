@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "EBTWeather",
+  "display": "standalone",
+  "name": "EBTWeather",
+  "short_name": "EBTWeather",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}
